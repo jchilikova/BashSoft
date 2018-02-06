@@ -45,12 +45,6 @@ namespace BashSoft
                 case "order":
                     TryOrderAndTake(input, data);
                     break;
-                case "decOrder":
-                    break;
-                case "download":
-                    break;
-                case "downloadAsynch":
-                    break;
                 case "show":
                     TryShowWantedData(input, data);
                     break;
@@ -218,7 +212,7 @@ namespace BashSoft
 
                 if (hasParsed)
                 {
-                    IOManager.TraverseDirectory(0);
+                    IOManager.TraverseDirectory(depth);
                 }
                 else
                 {
@@ -251,7 +245,15 @@ namespace BashSoft
             if (data.Length == 2)
             {
                 string fileName = data[1];
-                Process.Start(SessionData.currentPath + "\\" + fileName);
+                try
+                {
+                    Process.Start(SessionData.currentPath + "\\" + fileName);
+                }
+                catch(System.ComponentModel.Win32Exception)
+                {
+                    OutputWriter.DisplayException(ExceptionMessages.InvalidTypeOfFileOpened);
+                }
+                
             }
             else
             {

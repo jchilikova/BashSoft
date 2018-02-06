@@ -21,5 +21,6 @@ namespace BashSoft
         public const string InvalidComparisonQuery = "The comparison query you want, does not exist in the context of the current program!";
         public const string InvalidTakeCommand = "The take command expected does not match the format wanted!";
         public const string InvalidTakeQuantityParameter = "Invalid take quantity parameter!";
+        public const string InvalidTypeOfFileOpened = "This type of file cannot be started.";
     }
 }

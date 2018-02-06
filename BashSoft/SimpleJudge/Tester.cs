@@ -101,6 +101,11 @@ namespace BashSoft.SimpleJudge
         private static string GetMismatchPath(string expectedOutputPath)
         {
             int indexOf = expectedOutputPath.LastIndexOf('\\');
+            if (indexOf == -1)
+            {
+                OutputWriter.DisplayException(ExceptionMessages.InvalidPath);
+            }
+
             string directoryPath = expectedOutputPath.Substring(0, indexOf);
             string finalPath = directoryPath + @"\Mismatches.txt";
             return finalPath;
