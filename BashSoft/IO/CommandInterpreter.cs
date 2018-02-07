@@ -247,11 +247,14 @@ namespace BashSoft
                 string fileName = data[1];
                 try
                 {
-                    Process.Start(SessionData.currentPath + "\\" + fileName);
+                    var process = new Process();
+                    process.StartInfo.FileName = SessionData.currentPath + "\\" + fileName;
+                    process.StartInfo.UseShellExecute = true;
+                    process.Start();
                 }
                 catch(System.ComponentModel.Win32Exception)
                 {
-                    OutputWriter.DisplayException(ExceptionMessages.InvalidTypeOfFileOpened);
+                    OutputWriter.DisplayException(ExceptionMessages.CannotFindFile);
                 }
                 
             }
