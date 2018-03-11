@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using BashSoft.Exceptions;
 
 namespace BashSoft.SimpleJudge
 {
-    public static class Tester
+    public class Tester
     {
-        public static void CompareContent(string userOutputPath, string expectedOutputPath)
+        public void CompareContent(string userOutputPath, string expectedOutputPath)
         {
-            OutputWriter.WriteMessageOnNewLine("Reading files...");
             try
             {
+                OutputWriter.WriteMessageOnNewLine("Reading files...");
                 string mismatchPath = GetMismatchPath(expectedOutputPath);
-
                 string[] actualOutputLines = File.ReadAllLines(userOutputPath);
                 string[] expectedOutputLines = File.ReadAllLines(expectedOutputPath);
 
@@ -24,14 +24,14 @@ namespace BashSoft.SimpleJudge
                 OutputWriter.WriteMessageOnNewLine("Files read!");
 
             }
-            catch (FileNotFoundException)
+            catch (IOException)
             {
-                OutputWriter.DisplayException(ExceptionMessages.InvalidPath);
+                throw new InvalidPathException();
             }
-           
+
         }
 
-        private static void PrintOutput(string[] mismatches, bool hasMismatch, string mismatchesPath)
+        private void PrintOutput(string[] mismatches, bool hasMismatch, string mismatchesPath)
         {
             if (hasMismatch)
             {
@@ -40,16 +40,7 @@ namespace BashSoft.SimpleJudge
                     OutputWriter.WriteMessageOnNewLine(line);
                 }
 
-                try
-                {
-                    File.WriteAllLines(mismatchesPath, mismatches);
-                }
-                catch (DirectoryNotFoundException)
-                {
-                    OutputWriter.DisplayException(ExceptionMessages.InvalidPath);
-                }  
-                
-                return;
+                File.WriteAllLines(mismatchesPath, mismatches);
             }
             else
             {
@@ -57,11 +48,11 @@ namespace BashSoft.SimpleJudge
             }
         }
 
-        private static string[] GetLinesWithPossibleMismatch(string[] actualOutputLines, string[] expectedOutputLines, out bool hasMismatch)
+        private string[] GetLinesWithPossibleMismatch(string[] actualOutputLines, string[] expectedOutputLines, out bool hasMismatch)
         {
             hasMismatch = false;
             string output = string.Empty;
-            
+
             OutputWriter.WriteMessageOnNewLine("Comparing files...");
 
             int minOutputLines = actualOutputLines.Length;
@@ -98,19 +89,17 @@ namespace BashSoft.SimpleJudge
             return mismatches;
         }
 
-        private static string GetMismatchPath(string expectedOutputPath)
+        private string GetMismatchPath(string expectedOutputPath)
         {
             int indexOf = expectedOutputPath.LastIndexOf('\\');
             if (indexOf == -1)
             {
-                OutputWriter.DisplayException(ExceptionMessages.InvalidPath);
+                throw new InvalidPathException();
             }
 
             string directoryPath = expectedOutputPath.Substring(0, indexOf);
             string finalPath = directoryPath + @"\Mismatches.txt";
             return finalPath;
         }
-
-
     }
 }

@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using BashSoft.Exceptions;
 
 namespace BashSoft
 {
-    public class IOManager
+    public static class IOManager
     {
-        public void TraverseDirectory(int depth)
+        public static void TraverseDirectory(int depth)
         {
             OutputWriter.WriteEmptyLine();
             int initialIdentation = SessionData.currentPath.Split('\\').Length;
@@ -19,40 +18,38 @@ namespace BashSoft
             {
                 string currentPath = subFolders.Dequeue();
                 int identation = currentPath.Split('\\').Length - initialIdentation;
+                OutputWriter.WriteMessageOnNewLine(String.Format($"{new string('-', identation)}{currentPath}"));
 
-                if (depth - identation < 0)
-                {
-                    break;
-                }
-
-                OutputWriter.WriteMessageOnNewLine(string.Format("{0}{1}", new string('-', identation), currentPath));
                 try
                 {
-                    foreach (var directoryPath in Directory.GetDirectories(currentPath))
-                    {
-                        subFolders.Enqueue(directoryPath);
-                        int indexOfLastSlash = directoryPath.LastIndexOf("\\");
-                        string folderName = directoryPath.Substring(indexOfLastSlash);
-                        OutputWriter.WriteMessageOnNewLine(new string('-', indexOfLastSlash) + folderName);
-
-                    }
-
                     foreach (var file in Directory.GetFiles(currentPath))
                     {
                         int indexOfLastSlash = file.LastIndexOf("\\");
                         string fileName = file.Substring(indexOfLastSlash);
                         OutputWriter.WriteMessageOnNewLine(new string('-', indexOfLastSlash) + fileName);
-                    }                          
-                }
-                catch (UnauthorizedAccessException)
-                {
-                    OutputWriter.WriteMessageOnNewLine(ExceptionMessages.UnauthorizedAccessExceptionMessage);
-                }
+                    }
 
+                    foreach (var directoryPath in Directory.GetDirectories(currentPath))
+                    {
+                        subFolders.Enqueue(directoryPath);
+                    }
+                }
+                catch (UnauthorizedAccessException Exception)
+                {
+                    OutputWriter.DisplayException(ExceptionMessages.UnauthorizedAccessExceptionMessage);
+                }
+               
+
+               
+
+                if (depth - identation < 0)
+                {
+                    break;
+                }
             }
         }
 
-        public void CreateDirectoryInCurrentFolder(string name)
+        public static void CreateDirectoryInCurrentFolder(string name)
         {
             string path = SessionData.currentPath + "\\" + name;
             try
@@ -61,14 +58,14 @@ namespace BashSoft
             }
             catch (ArgumentException)
             {
-                throw new InvalidFileNameException();
+                OutputWriter.DisplayException(ExceptionMessages.ForbiddenSymbolsContainedInName);
             }
             
         }
 
-        public void ChangeCurrentDirectoryRelative(string relativePath)
+        public static void ChangeCurrentDirectoryRelative(string relativePath)
         {
-            if (relativePath == "..")
+            if (relativePath == "")
             {
                 try
                 {
@@ -79,24 +76,23 @@ namespace BashSoft
                 }
                 catch (ArgumentOutOfRangeException)
                 {
-                    throw new ArgumentOutOfRangeException("indexOfLastSlash",
-                        ExceptionMessages.UnableToGoHigherInPartitionHierarchy);
+                    OutputWriter.DisplayException(ExceptionMessages.UnableToParseNumber);
                 }
-              
+                
             }
             else
             {
                 string currentPath = SessionData.currentPath;
                 currentPath += "\\" + relativePath;
-                ChangeCurrentDirectoryAbsolute(currentPath);
+                ChangeCurrentDirectoryRelative(currentPath);
             }
         }
-
-        public void ChangeCurrentDirectoryAbsolute(string absolutePath)
+        public static void ChangeCurrentDirectoryAbsolute(string absolutePath)
         {
             if (!Directory.Exists(absolutePath))
             {
-                throw new InvalidPathException();
+                OutputWriter.DisplayException(ExceptionMessages.InvalidPath);
+                return;
             }
 
             SessionData.currentPath = absolutePath;

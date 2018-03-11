@@ -4,11 +4,17 @@ using System.Text;
 
 namespace BashSoft
 {
-    public static class InputReader
+    public class InputReader
     {
         private const string endCommand = "quit";
+        private CommandInterpreter interpreter;
 
-        public static void StartReadingCommands()
+        public InputReader(CommandInterpreter interpreter)
+        {
+            this.interpreter = interpreter;
+        }
+
+        public void StartReadingCommands()
         {
             OutputWriter.WriteMessage($"{SessionData.currentPath}>");
             string input = Console.ReadLine();
@@ -16,7 +22,7 @@ namespace BashSoft
 
             while (!input.Equals(endCommand))
             {
-                CommandInterpreter.InterpredCommand(input);
+                this.interpreter.InterpredCommand(input);
                 OutputWriter.WriteMessage($"{SessionData.currentPath}>");
                 input = Console.ReadLine();
                 input = input.Trim();

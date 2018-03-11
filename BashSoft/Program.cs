@@ -4,11 +4,18 @@ using System.Diagnostics;
 
 namespace BashSoft
 {
-    class Program
+    public class Program
     {
-        static void Main()
+        public static void Main()
         {
-            InputReader.StartReadingCommands();
+            Tester tester = new Tester();
+            IOManager ioManager = new IOManager();
+            StudentRepository repo = new StudentRepository(new RepositoryFilter(), new RepositorySorter());
+
+            CommandInterpreter currentInterpreter = new CommandInterpreter(tester, repo, ioManager);
+            InputReader reader = new InputReader(currentInterpreter);
+
+            reader.StartReadingCommands();
         }
     }
 }

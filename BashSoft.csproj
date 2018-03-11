@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="CommandInterpreter.cs" />
+    <Compile Remove="ExceptionMessages.cs" />
+    <Compile Remove="InputReader.cs" />
+    <Compile Remove="RepositoryFilters.cs" />
+    <Compile Remove="RepositorySorters.cs" />
+    <Compile Remove="StudentsRepository.cs" />
+  </ItemGroup>
+
+</Project>

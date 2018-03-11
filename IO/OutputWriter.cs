@@ -11,25 +11,30 @@ namespace BashSoft
             Console.Write(message);
         }
 
-        public static void WriteMessageOnNewLine(string message)
+        public static void WriteMessageOnNewLine (string message)
         {
             Console.WriteLine(message);
         }
-        public static void WriteEmptyLine()
+
+        public static void WriteEmptyLine ()
         {
             Console.WriteLine();
         }
+
         public static void DisplayException(string message)
         {
-            ConsoleColor currentColor = Console.ForegroundColor;
+            ConsoleColor currColor = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Red;
+
             Console.WriteLine(message);
-            Console.ForegroundColor = currentColor;
+
+            Console.ForegroundColor = currColor;
         }
 
-        public static void PrintStudent(KeyValuePair<string, double> student)
+
+        public static void PrintStudent(KeyValuePair<string, List<int>> student)
         {
-            OutputWriter.WriteMessageOnNewLine(string.Format($"{student.Key} - {student.Value}"));
+            OutputWriter.WriteMessageOnNewLine(string.Format($"{student.Key} - {String.Join(", ", student.Value)}"));
         }
     }
 }
